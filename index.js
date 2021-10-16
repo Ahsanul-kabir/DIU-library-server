@@ -22,7 +22,8 @@ client.connect(err => {
     const reg = client.db("libraryManagement").collection("reg");
     const bookList = client.db("libraryManagement").collection("bookList");
     const issueBook = client.db("libraryManagement").collection("issueBook");
-    const issue = client.db("libraryManagement").collection("issue");
+    // const issue = client.db("libraryManagement").collection("issue");
+    const reviewCollection = client.db("libraryManagement").collection("reviews");
 
     console.log('DB Connected')
     console.log(err)
@@ -71,7 +72,7 @@ client.connect(err => {
                 res.send(result)
             })
     })
-    app.get('/booksuuu', (req, res) => {
+    app.get('/booksManage', (req, res) => {
         issueBook.find({}).toArray((err, documents) => {
             res.send(documents)
         })
@@ -80,21 +81,37 @@ client.connect(err => {
 
 
 
-    app.post('/issues', function (req, res) {
-        const issueL = req.body;
-        console.log(issueL)
-        issue.insertOne(issueL)
-            .then(result => {
-                console.log(issueL);
-                res.send(result)
-            })
-    });
+    // app.post('/issues', function (req, res) {
+    //     const issueL = req.body;
+    //     console.log(issueL)
+    //     issue.insertOne(issueL)
+    //         .then(result => {
+    //             console.log(issueL);
+    //             res.send(result)
+    //         })
+    // });
 
-    app.get('/issue', (req, res) => {
-        issue.find({}).toArray((err, documents) => {
-            res.send(documents)
-        })
-    });
+    // app.get('/issue', (req, res) => {
+    //     issue.find({}).toArray((err, documents) => {
+    //         res.send(documents)
+    //     })
+    // });
+
+
+    app.get('/reviews', (req, res) => {
+        reviewCollection.find()
+            .toArray((err, reviews) => {
+                res.send(reviews)
+            })
+    })
+
+    app.post('/addreview', (req, res) => {
+        const review = req.body;
+        reviewCollection.insertOne(review)
+            .then(result => {
+                res.status(200).send(result.insertedCount > 0)
+            })
+    })
 
 
     app.get('/', (req, res) => {
