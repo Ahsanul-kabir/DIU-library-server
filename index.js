@@ -22,7 +22,6 @@ client.connect(err => {
     const reg = client.db("libraryManagement").collection("reg");
     const bookList = client.db("libraryManagement").collection("bookList");
     const issueBook = client.db("libraryManagement").collection("issueBook");
-    // const issue = client.db("libraryManagement").collection("issue");
     const reviewCollection = client.db("libraryManagement").collection("reviews");
 
     console.log('DB Connected')
@@ -68,7 +67,7 @@ client.connect(err => {
         console.log(GiveBook)
         issueBook.insertOne(GiveBook)
             .then(result => {
-                console.log(GiveBook);
+                // console.log(GiveBook);
                 res.send(result)
             })
     })
@@ -77,26 +76,6 @@ client.connect(err => {
             res.send(documents)
         })
     })
-
-
-
-
-    // app.post('/issues', function (req, res) {
-    //     const issueL = req.body;
-    //     console.log(issueL)
-    //     issue.insertOne(issueL)
-    //         .then(result => {
-    //             console.log(issueL);
-    //             res.send(result)
-    //         })
-    // });
-
-    // app.get('/issue', (req, res) => {
-    //     issue.find({}).toArray((err, documents) => {
-    //         res.send(documents)
-    //     })
-    // });
-
 
     app.get('/reviews', (req, res) => {
         reviewCollection.find()
@@ -112,6 +91,18 @@ client.connect(err => {
                 res.status(200).send(result.insertedCount > 0)
             })
     })
+
+
+    app.patch('/updateBook/:id', (req, res) => {
+        issueBook.updateOne({ _id: ObjectId(req.params.id) },
+            {
+                $set: { return_date: req.body.date }
+            })
+            .then(result => {
+                console.log(result);
+                res.send(result.modifiedCount > 0)
+            })
+    });
 
 
     app.get('/', (req, res) => {
